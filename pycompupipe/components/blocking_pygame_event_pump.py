@@ -3,7 +3,8 @@
 from __future__ import division    # Standardmäßig float division - Ganzzahldivision kann man explizit mit '//' durchführen
 
 from pyecs import *
-from pyecs.components import *
+# from pyecs.components import *
+from components import Pygame
 
 import pygame
 
@@ -22,10 +23,8 @@ class BlockingPygameEventPump(Component):
         self.done = True
 
     def pump(self):
-        if self.done: return
-        event = pygame.event.wait()
-        print event
-        if event.type in self.pygame.pygame_mappings:
-            self.entity.fire_callbacks(self.pygame.pygame_mappings[event.type], event)
+        while not self.done:
+            event = pygame.event.wait()
+            if event.type in self.pygame.pygame_mappings:
+                self.entity.fire_callbacks(self.pygame.pygame_mappings[event.type], event)
 
-        self.pump()

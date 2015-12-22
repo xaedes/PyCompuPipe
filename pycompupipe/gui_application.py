@@ -20,8 +20,6 @@ class GuiApplication(Application):
     def setup_main_entity(self):
         super(GuiApplication, self).setup_main_entity()
         self.entity.add_component(BlockingPygameEventPump())
-        self.entity.add_component(DrawOnVideoresize())
-        self.entity.add_component(PropagateCallback(["draw"]))
         self.entity.fire_callbacks("awake")
 
     def spin(self):

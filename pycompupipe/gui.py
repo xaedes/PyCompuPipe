@@ -29,19 +29,30 @@ class Gui(GuiApplication):
             size=(self.width,self.height),
             caption="PyCompuPipe",
             flags=pygame.DOUBLEBUF | pygame.RESIZABLE))
+        self.entity.add_component(DrawOnResized())
         self.entity.add_component(ColorFill(color=(255,255,255)))
         # def print_args(*args):
         #     print args
         # self.entity.register_callback("videoresize",print_args)
-        # self.entity.add_entity(self.create_entity())
+        self.entity.add_entity(self.create_entity())
+        self.entity.add_entity(self.create_entity())
+        self.entity.add_component(PropagateCallback(["draw","mousebuttondown","mousebuttonup","mousemotion"]))
         self.entity.fire_callbacks("awake")
+        self.entity.get_component(Pygame).draw()
+
 
     def create_entity(self):
         e = Entity()
-        e.add_component(Pose(20,10))
-        e.add_component(Size(20,10))
-        e.add_component(DrawSizeAsRectangle((128,128,128)))
+        e.add_component(Pose(100,100))
+        e.add_component(Size((100,50)))
+        e.add_component(BoundingBox())
+        e.add_component(Selectable())
         e.add_component(Draggable())
+        e.add_component(DrawBoundingBox((0,0,0)))
+        def dragging(draggable):
+            self.entity.get_component(Pygame).draw()
+
+        e.register_callback("dragging", dragging)
         e.fire_callbacks("awake")
         return e
 
