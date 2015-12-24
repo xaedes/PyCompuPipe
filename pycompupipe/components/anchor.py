@@ -25,14 +25,14 @@ class Anchor(Component):
         else:
             raise NotImplementedError()
 
-    @callback
+    @component_callback
     @with_components(required=[Size])
-    def awake(self, size):
+    def component_attached(self, size):
         self.size = size
 
     @callback
     def position(self, accum):
-        if self.size is None: return accum
+        # if self.size is None: return accum
         x,y = accum
         w,h = self.size.size
         return x - self.x * w, y - self.y * h
