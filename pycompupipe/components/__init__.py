@@ -23,4 +23,6 @@ from print_entity_structure import PrintEntityStructure
 from draw_process_connectors import DrawProcessConnectors
 from draw_grid import DrawGrid
 from snap_to_grid import SnapToGrid
+from pose_transform import PoseTransform
+from draw_line import DrawLine
 

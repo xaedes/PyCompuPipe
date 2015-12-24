@@ -21,10 +21,10 @@ class Anchor(Component):
             self.x = xy
             self.y = xy
         elif type(xy) == tuple:
-            self.x, self.y == xy
+            self.x, self.y = xy
         else:
             raise NotImplementedError()
-        
+
     @callback
     @with_components(required=[Size])
     def awake(self, size):

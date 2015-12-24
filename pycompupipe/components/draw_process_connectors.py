@@ -35,7 +35,7 @@ class DrawProcessConnectors(Component):
             pygame.draw.line(screen, self.color, p0, p1, 1)
 
             p0 = x-0.4*self.padding, y+(i+1-0.4)*self.padding
-            p1 = x, y+(i+1)*self.padding
+            p1 = x+5, y+(i+1)*self.padding
             pygame.draw.line(screen, self.color, p0, p1, 1)
 
             p0 = x-0.4*self.padding, y+(i+1+0.4)*self.padding

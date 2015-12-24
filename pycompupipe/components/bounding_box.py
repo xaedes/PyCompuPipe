@@ -16,9 +16,9 @@ class BoundingBox(Component):
         # self.pose = None
         # self.size = None
 
-    @callback
+    @component_callback
     @with_components(required=[Pose,Size])
-    def awake(self,pose,size):
+    def component_attached(self,pose,size):
         self.pose = pose
         self.size = size
 
