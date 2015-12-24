@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division    # Standardmäßig float division - Ganzzahldivision kann man explizit mit '//' durchführen
 import math
+
 from pyecs import *
 
 class Pose(Component):
@@ -30,3 +31,13 @@ class Pose(Component):
         dy = y - self.y
         return (dx,dy)
         
+    @callback
+    def position(self, accum):
+        return self.x, self.y
+
+    def __str__(self):
+        return "%s(%s,%s)" % (
+                super(type(self),self).__str__(), 
+                self.x, 
+                self.y, 
+                )

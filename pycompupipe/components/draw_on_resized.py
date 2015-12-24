@@ -4,7 +4,7 @@ from __future__ import division    # Standardmäßig float division - Ganzzahldi
 
 from pyecs import *
 # from pyecs.components import *
-from components import Pygame
+from . import Pygame
 
 class DrawOnResized(Component):
     """fires draw callback on videoresize callback"""

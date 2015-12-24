@@ -1,7 +1,7 @@
 from setuptools import setup
 
 def readme():
-    with open('README.rst') as f:
+    with open('README.md') as f:
         return f.read()
 
 setup(
@@ -13,7 +13,7 @@ setup(
     author="xaedes",
     author_email="xaedes@gmail.com",
     license="MIT",
-    packages=["pycompupipe"],
+    packages=["pycompupipe","pycompupipe.components"],
     dependency_links=[
         "https://github.com/xaedes/testing/tarball/master",
         "https://github.com/xaedes/pyecs/tarball/master"

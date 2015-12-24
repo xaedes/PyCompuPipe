@@ -7,7 +7,7 @@ import pygame
 
 from pyecs import *
 # from pyecs.components import *
-from components import Pose,Size
+from . import Pose,Size
 
 class BoundingBox(Component):
     """docstring for BoundingBox"""
@@ -23,12 +23,8 @@ class BoundingBox(Component):
         self.size = size
 
     def rect(self):
-        if isinstance(self.size.size, Number):
-            # one-dimensional size, use value for width and height
-            return (self.pose.x - self.size.size/2, self.pose.y - self.size.size/2, self.size.size, self.size.size)
-        elif type(self.size.size) == tuple:
-            # two-dimensional size
-            return (self.pose.x - self.size.size[0]/2, self.pose.y - self.size.size[1]/2, self.size.size[0], self.size.size[1])
+        x,y = self.entity.fire_callbacks_pipeline("position")
+        return (x, y, self.size.size[0], self.size.size[1])
 
     @callback
     def is_in(self, pos):

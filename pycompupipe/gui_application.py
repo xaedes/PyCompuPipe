@@ -20,7 +20,6 @@ class GuiApplication(Application):
     def setup_main_entity(self):
         super(GuiApplication, self).setup_main_entity()
         self.entity.add_component(BlockingPygameEventPump())
-        self.entity.fire_callbacks("awake")
 
     def spin(self):
         self.entity.get_component(BlockingPygameEventPump).pump()
