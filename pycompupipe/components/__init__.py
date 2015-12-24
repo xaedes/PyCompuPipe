@@ -20,4 +20,5 @@ from blit_surface import BlitSurface
 from resize_event_on_videoresize import ResizeEventOnVideoresize
 from process import Process
 from print_entity_structure import PrintEntityStructure
+from draw_process_connectors import DrawProcessConnectors
 

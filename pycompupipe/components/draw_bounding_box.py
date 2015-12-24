@@ -15,13 +15,14 @@ class DrawBoundingBox(Component):
 
 
     @component_callback
-    def component_attached(self):
+    @with_components(required=[BoundingBox])
+    def component_attached(self, boundingbox):
+        self.boundingbox = boundingbox
         self.entity.register_callback(self.draw_event_name, self.draw)
     
-    @with_components(required=[BoundingBox])
-    def draw(self, screen, boundingbox):
-        bbox = boundingbox.rect()
-        print "DrawBoundingBox.draw", screen, bbox
+    def draw(self, screen):
+        bbox = self.boundingbox.rect()
+        # print "DrawBoundingBox.draw", screen, bbox
         pygame.draw.rect(screen, self.color, bbox, 1)
 
     def __str__(self):

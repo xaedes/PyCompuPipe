@@ -28,7 +28,7 @@ class BlitSurface(Component):
 
     def draw(self, surface):
         x,y = self.entity.fire_callbacks_pipeline("position")
-        print "blit", self.surface.surface, "at", (x,y), "to", self.draw_event_name
+        # print "blit", self.surface.surface, "at", (x,y), "to", self.draw_event_name
         surface.blit(self.surface.surface,(x,y),None,self.blit_flags)
 
     def __str__(self):

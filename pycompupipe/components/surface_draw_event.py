@@ -33,7 +33,7 @@ class SurfaceDrawEvent(Component):
                 self.fire_at = self.entity
 
     def event(self, *args, **kwargs):
-        print self.event_name
+        # print self.event_name
         if self.fire_at is not None:
             self.fire_at.fire_callbacks(self.event_name, self.surface.surface)
 

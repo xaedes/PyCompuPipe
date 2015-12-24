@@ -30,15 +30,16 @@ class Gui(GuiApplication):
             caption="PyCompuPipe",
             flags=pygame.DOUBLEBUF | pygame.RESIZABLE))
         self.entity.add_component(DrawOnResized())
-        # self.entity.add_component(ColorFill(color=(255,255,255)))
+        self.entity.add_component(ColorFill("draw",color=(255,255,255)))
         # def print_args(*args):
         #     print args
         # self.entity.register_callback("videoresize",print_args)
 
         self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"lines"))
         self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"blocks"))
-        self.entity.add_entity(self.create_process())
-        self.entity.add_entity(self.create_process())
+        for i in range(5):
+            self.entity.add_entity(self.create_process())
+        # self.entity.add_entity(self.create_process())
         self.entity.add_component(PropagateCallback(["draw","mousebuttondown","mousebuttonup","mousemotion","draw_blocks","draw_lines","redraw"]))
         self.entity.fire_callbacks("awake")
         self.entity.fire_callbacks("redraw")
@@ -49,10 +50,10 @@ class Gui(GuiApplication):
 
     def create_screen_filling_surface(self, size, name):
         e = Entity()
-        e.add_component(PygameSurface(size))
+        e.add_component(PygameSurface(size,pygame.SRCALPHA))
         e.add_component(ResizeEventOnVideoresize("draw"))
         e.add_component(SurfaceDrawEvent("draw","draw_"+name,fire_at_root=True))
-        e.add_component(ColorFill("draw_"+name,color=(255,255,255)))
+        e.add_component(ColorFill("draw_"+name,color=(0,0,0,0)))
         e.add_component(Pose(0,0))
         e.add_component(Anchor(0))
         e.add_component(BlitSurface("draw"))
@@ -62,7 +63,7 @@ class Gui(GuiApplication):
     def create_process(self):
         e = Entity()
         e.add_component(Process(1,1))
-        e.add_component(PropagateCallback(["draw","draw_blocks","redraw","mousebuttondown","mousebuttonup","mousemotion"]))
+        e.add_component(PropagateCallback(["draw","draw_blocks","draw_lines","redraw","mousebuttondown","mousebuttonup","mousemotion"]))
         e.add_entity(self.create_process_gui((100,100),(100,50)))
         e.fire_callbacks("awake")
         return e
@@ -80,6 +81,7 @@ class Gui(GuiApplication):
         e.add_component(Selectable())
         e.add_component(Draggable())
         e.add_component(PropagateCallback([draw_event]))
+        e.add_component(DrawProcessConnectors("draw_lines"))
         def dragging(draggable):
             self.entity.get_component(Pygame).draw()
 
@@ -94,7 +96,8 @@ class Gui(GuiApplication):
         e = Entity()
         e.add_component(Pose(0,0))
         e.add_component(Anchor(0))
-        e.add_component(Size((size[0]-1,size[1]-1)))
+        e.add_component(Size(size))
+        # e.add_component(Size((size[0]-1,size[1]-1)))
         e.add_component(BoundingBox())
         e.add_component(ColorFill(draw_event,color=(255,255,255)))
         e.add_component(DrawBoundingBox(draw_event,(0,0,0)))
@@ -103,6 +106,7 @@ class Gui(GuiApplication):
 
 def main(module_name):
     if module_name == "__main__":
+        # profile(Gui)
         Gui()
 
 main(__name__)
