@@ -8,11 +8,11 @@ from . import Process, BoundingBox
 
 class DrawProcessConnectors(Component):
     """docstring for DrawProcessConnectors"""
-    def __init__(self, draw_event_name, color=(0,0,0), *args,**kwargs):
+    def __init__(self, draw_event_name, color=(0,0,0), padding=10, *args,**kwargs):
         super(DrawProcessConnectors, self).__init__(*args,**kwargs)
         self.draw_event_name = draw_event_name
         self.color = color
-        self.padding = 10
+        self.padding = padding
 
 
     @component_callback
@@ -34,11 +34,11 @@ class DrawProcessConnectors(Component):
             p1 = x, y+(i+1)*self.padding
             pygame.draw.line(screen, self.color, p0, p1, 1)
 
-            p0 = x-0.5*self.padding, y+(i+1-0.5)*self.padding
+            p0 = x-0.4*self.padding, y+(i+1-0.4)*self.padding
             p1 = x, y+(i+1)*self.padding
             pygame.draw.line(screen, self.color, p0, p1, 1)
 
-            p0 = x-0.5*self.padding, y+(i+1+0.5)*self.padding
+            p0 = x-0.4*self.padding, y+(i+1+0.4)*self.padding
             p1 = x, y+(i+1)*self.padding
             pygame.draw.line(screen, self.color, p0, p1, 1)
 

@@ -19,6 +19,7 @@ class Gui(GuiApplication):
     def __init__(self):
         self.width = 640
         self.height = 480
+        self.grid_size = 16
 
         super(Gui, self).__init__()
 
@@ -31,6 +32,7 @@ class Gui(GuiApplication):
             flags=pygame.DOUBLEBUF | pygame.RESIZABLE))
         self.entity.add_component(DrawOnResized())
         self.entity.add_component(ColorFill("draw",color=(255,255,255)))
+        self.entity.add_component(DrawGrid("draw",self.grid_size))
         # def print_args(*args):
         #     print args
         # self.entity.register_callback("videoresize",print_args)
@@ -38,7 +40,7 @@ class Gui(GuiApplication):
         self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"lines"))
         self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"blocks"))
         for i in range(5):
-            self.entity.add_entity(self.create_process())
+            self.entity.add_entity(self.create_process(i))
         # self.entity.add_entity(self.create_process())
         self.entity.add_component(PropagateCallback(["draw","mousebuttondown","mousebuttonup","mousemotion","draw_blocks","draw_lines","redraw"]))
         self.entity.fire_callbacks("awake")
@@ -60,11 +62,11 @@ class Gui(GuiApplication):
         e.fire_callbacks("awake")
         return e
 
-    def create_process(self):
+    def create_process(self,i):
         e = Entity()
-        e.add_component(Process(1,1))
+        e.add_component(Process(i,i))
         e.add_component(PropagateCallback(["draw","draw_blocks","draw_lines","redraw","mousebuttondown","mousebuttonup","mousemotion"]))
-        e.add_entity(self.create_process_gui((100,100),(100,50)))
+        e.add_entity(self.create_process_gui((100,100),(100,1+(i+1)*self.grid_size)))
         e.fire_callbacks("awake")
         return e
 
@@ -80,8 +82,9 @@ class Gui(GuiApplication):
         e.add_component(BoundingBox())
         e.add_component(Selectable())
         e.add_component(Draggable())
+        e.add_component(SnapToGrid(self.grid_size))
         e.add_component(PropagateCallback([draw_event]))
-        e.add_component(DrawProcessConnectors("draw_lines"))
+        e.add_component(DrawProcessConnectors("draw_lines",padding=self.grid_size))
         def dragging(draggable):
             self.entity.get_component(Pygame).draw()
 
