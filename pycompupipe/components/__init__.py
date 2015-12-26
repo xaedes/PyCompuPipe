@@ -25,4 +25,8 @@ from draw_grid import DrawGrid
 from snap_to_grid import SnapToGrid
 from pose_transform import PoseTransform
 from draw_line import DrawLine
+from occupancy_grid import OccupancyGrid
+from occupying_bounding_box import OccupyingBoundingBox
+from occupying_process import OccupyingProcess
+
 
