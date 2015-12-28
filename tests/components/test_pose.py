@@ -17,13 +17,25 @@ class TestPose():
         p = Pose(1,2)
         assert p.x == 1
         assert p.y == 2
-        assert p.angle == 0 # default value if not specified
+        assert p.angle == None # default value if not specified
+        assert str(p) == "Pose(1,2)"
 
         # specify x, y and angle
         p = Pose(1,2,3)
         assert p.x == 1
         assert p.y == 2
         assert p.angle == 3
+        assert str(p) == "Pose(1,2,3)"
+
+
+    def test_pipeline(self):
+        p = Pose(1,2)
+        e = Entity()
+        assert e.fire_callbacks_pipeline("position") == None
+        e.add_component(p)
+        assert e.fire_callbacks_pipeline("position") == (1,2)
+        e.remove_component(p)
+        assert e.fire_callbacks_pipeline("position") == None
 
     @forEach("x",partial(generateRandomNormals,0,1),5)
     @forEach("y",partial(generateRandomNormals,0,1),5)

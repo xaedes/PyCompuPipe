@@ -15,3 +15,5 @@ class TestSize():
         # use a tuple to specify width and height
         s = Size((20,10))
         assert s.size == (20,10)
+
+        assert str(s) == "Size(%s)"%str((20,10))
