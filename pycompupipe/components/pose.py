@@ -7,7 +7,7 @@ from pyecs import *
 
 class Pose(Component):
     """docstring for Pose"""
-    def __init__(self, x, y, angle=0, *args,**kwargs):
+    def __init__(self, x, y, angle=None, *args,**kwargs):
         super(Pose, self).__init__(*args,**kwargs)
         self.x = x
         self.y = y
@@ -36,8 +36,10 @@ class Pose(Component):
         return self.x, self.y
 
     def __str__(self):
-        return "%s(%s,%s)" % (
+        params = [self.x,self.y]
+        if self.angle is not None:
+            params.append(self.angle)
+        return "%s(%s)" % (
                 super(type(self),self).__str__(), 
-                self.x, 
-                self.y, 
+                ",".join(map(str,params))
                 )
