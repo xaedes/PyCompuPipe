@@ -1,5 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+from gui_element import GuiElement
+from gui_manager import GuiManager
 
 from pose import Pose
 from size import Size
@@ -33,7 +35,6 @@ from occupying_process import OccupyingProcess
 from process_input import ProcessInput
 from process_output import ProcessOutput
 from process_connection import ProcessConnection
+from fetch_mouse_callbacks_while_selected import FetchMouseCallbacksWhileSelected
 
-from gui_element import GuiElement
-from gui_manager import GuiManager
 
