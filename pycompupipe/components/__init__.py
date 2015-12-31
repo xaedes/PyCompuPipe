@@ -28,8 +28,12 @@ from draw_line import DrawLine
 from occupancy_grid import OccupancyGrid
 from occupying_bounding_box import OccupyingBoundingBox
 from occupying_process import OccupyingProcess
+# from find_line_from import FindLineFrom
 
 from process_input import ProcessInput
 from process_output import ProcessOutput
 from process_connection import ProcessConnection
+
+from gui_element import GuiElement
+from gui_manager import GuiManager
 
