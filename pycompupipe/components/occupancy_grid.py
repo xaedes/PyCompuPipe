@@ -75,7 +75,6 @@ class OccupancyGrid(Component):
         pos = (x*self.resolution,y*self.resolution)
         # screen.set_at((x*self.resolution,y*self.resolution),color)
         pygame.draw.circle(screen, color, pos, 2, 0)
-        # screen.
         # screen.set_at((x*self.resolution+1,y*self.resolution),color)
         # screen.set_at((x*self.resolution,y*self.resolution+1),color)
         # screen.set_at((x*self.resolution-1,y*self.resolution),color)
