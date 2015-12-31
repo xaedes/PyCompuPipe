@@ -29,4 +29,7 @@ from occupancy_grid import OccupancyGrid
 from occupying_bounding_box import OccupyingBoundingBox
 from occupying_process import OccupyingProcess
 
+from process_input import ProcessInput
+from process_output import ProcessOutput
+from process_connection import ProcessConnection
 
