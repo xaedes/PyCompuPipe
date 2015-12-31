@@ -29,7 +29,7 @@ class TestGuiManager():
 
         assert gui_element.manager == gui_manager
         
-    def test_query(self):
+    def test_query1(self):
         Entity._reset_global()
         Component._reset_global()
         e = Entity()
@@ -41,10 +41,10 @@ class TestGuiManager():
 
         e.fire_callbacks("awake")
 
-        assert gui_manager.query(0,0) == gui_element
-        assert gui_manager.query(50,25) == gui_element
-        assert gui_manager.query(100,0) == gui_element
-        assert gui_manager.query(150,0) == None
+        assert gui_manager.query1(0,0) == gui_element
+        assert gui_manager.query1(50,25) == gui_element
+        assert gui_manager.query1(100,0) == gui_element
+        assert gui_manager.query1(150,0) == None
 
     @forEach("callback_name",lambda:iter(["mousemotion","mousebuttonup","mousebuttondown"]))
     def test_event_propagation(self, callback_name):

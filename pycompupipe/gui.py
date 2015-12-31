@@ -31,6 +31,7 @@ class Gui(GuiApplication):
             caption="PyCompuPipe",
             flags=pygame.DOUBLEBUF | pygame.RESIZABLE))
         self.entity.add_component(DrawOnResized())
+        self.entity.add_component(GuiManager())
         # self.entity.add_component(OccupancyGrid(self.grid_resolution))
         self.entity.add_component(ColorFill("draw",color=(255,255,255)))
         self.entity.add_component(DrawGrid("draw",self.grid_resolution))
@@ -46,7 +47,7 @@ class Gui(GuiApplication):
         # self.entity.add_entity(self.create_process())
         self.entity.add_component(PropagateCallback([
             "draw","draw_blocks","draw_lines","draw_debug","redraw",
-            "mousebuttondown","mousebuttonup","mousemotion",
+            # "mousebuttondown","mousebuttonup","mousemotion",
             "update_occupancy"]))
         self.entity.fire_callbacks("awake")
         self.entity.fire_callbacks("redraw")
@@ -91,27 +92,30 @@ class Gui(GuiApplication):
     def attach_process_gui(self,entity,pos,size):
         e = entity
         process = e.get_component(Process)
-        e.add_component(Pose(*pos))
-        e.add_component(Size(size))
-        e.add_component(Anchor(0.5))
+        # e.add_component(Pose(*pos))
+        # e.add_component(Size(size))
+        # e.add_component(Anchor(0.5))
         e.add_component(PygameSurface(size))
         draw_event = "draw_%i"%e.uid
         # e.add_component(SurfaceDrawEvent("awake",draw_event))
         e.add_component(SurfaceDrawEvent("redraw",draw_event))
-        e.add_component(BoundingBox())
+        # e.add_component(BoundingBox())
         # e.add_component(OccupyingBoundingBox())
         # e.add_component(OccupyingProcess())
+        e.add_component(GuiElement(pos,size,(0.5,0.5),snap_to_grid=self.grid_resolution))
+        e.add_component(FetchMouseCallbacksWhileSelected())
         e.add_component(Selectable())
         e.add_component(Draggable())
-        e.add_component(SnapToGrid(self.grid_resolution))
+        # e.add_component(SnapToGrid(self.grid_resolution))
         e.add_component(PropagateCallback([draw_event,"draw_lines","draw_debug","mousebuttondown","mousebuttonup","mousemotion"]))
         # e.add_component(DrawProcessConnectors("draw_lines",padding=self.grid_resolution))
 
-        def dragging(draggable):
+        def onDragging(draggable):
+
             self.entity.fire_callbacks("update_occupancy",self.entity.get_component(OccupancyGrid))
             self.entity.get_component(Pygame).draw()
 
-        e.register_callback("dragging", dragging)
+        e.register_callback("dragging", onDragging)
 
         e.add_entity(self.create_box(size,draw_event))
         # e.add_entity(self.create_process_input_gui(size,process.num_inputs))
@@ -146,17 +150,19 @@ class Gui(GuiApplication):
 
     def attach_process_input_gui(self, entity, x, y):
         e = entity
-        hitbox_height = 5
-        e.add_component(Pose(x,y))
-        e.add_component(PoseTransform())
-        e.add_component(Size((self.grid_resolution,hitbox_height)))
-        e.add_component(Anchor((1,0.5)))
+        hitbox_height = self.grid_resolution
+        # e.add_component(Pose(x,y))
+        # e.add_component(PoseTransform())
+        # e.add_component(Size((self.grid_resolution,hitbox_height)))
+        # e.add_component(Anchor((1,0.5)))
         # e.add_component(Size((size[0]-1,size[1]-1)))
-        e.add_component(BoundingBox())
+        # e.add_component(BoundingBox())
         # e.add_component(DrawBoundingBox("draw_lines",(0,0,0)))
+        e.add_component(GuiElement((x,y),(self.grid_resolution,hitbox_height),(1,0.5),relative_position=True,snap_to_grid=self.grid_resolution))
+        e.add_component(FetchMouseCallbacksWhileSelected())
         e.add_component(Selectable())
         e.add_component(Draggable())
-        e.add_component(SnapToGrid(self.grid_resolution))
+        # e.add_component(SnapToGrid(self.grid_resolution))
         # x,y,w,h = bb.rect()
         e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
         def onDragging(draggable):
@@ -167,17 +173,19 @@ class Gui(GuiApplication):
 
     def attach_process_output_gui(self, entity, x, y):
         e = entity
-        hitbox_height = 5
-        e.add_component(Pose(x,y))
-        e.add_component(PoseTransform())
-        e.add_component(Size((self.grid_resolution,hitbox_height)))
-        e.add_component(Anchor((0,0.5)))
+        hitbox_height = self.grid_resolution
+        # e.add_component(Pose(x,y))
+        # e.add_component(PoseTransform())
+        # e.add_component(Size((self.grid_resolution,hitbox_height)))
+        # e.add_component(Anchor((0,0.5)))
         ## e.add_component(Size((size[0]-1,size[1]-1)))
-        e.add_component(BoundingBox())
+        # e.add_component(BoundingBox())
         ## e.add_component(DrawBoundingBox("draw_lines",(0,0,0)))
+        e.add_component(GuiElement((x,y),(self.grid_resolution,hitbox_height),(0,0.5),relative_position=True,snap_to_grid=self.grid_resolution))
+        e.add_component(FetchMouseCallbacksWhileSelected())
         e.add_component(Selectable())
         e.add_component(Draggable())
-        e.add_component(SnapToGrid(self.grid_resolution))
+        # e.add_component(SnapToGrid(self.grid_resolution))
         e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
         # def onDragging(draggable):
             # self.entity.get_component(Pygame).draw()
