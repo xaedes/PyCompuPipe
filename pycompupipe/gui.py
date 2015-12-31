@@ -31,7 +31,7 @@ class Gui(GuiApplication):
             caption="PyCompuPipe",
             flags=pygame.DOUBLEBUF | pygame.RESIZABLE))
         self.entity.add_component(DrawOnResized())
-        self.entity.add_component(OccupancyGrid(self.grid_resolution))
+        # self.entity.add_component(OccupancyGrid(self.grid_resolution))
         self.entity.add_component(ColorFill("draw",color=(255,255,255)))
         self.entity.add_component(DrawGrid("draw",self.grid_resolution))
         # def print_args(*args):
@@ -40,12 +40,12 @@ class Gui(GuiApplication):
 
         self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"lines"))
         self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"blocks"))
-        self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"debug"))
+        # self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"debug"))
         for i in range(2,5):
             self.entity.add_entity(self.create_process(i))
         # self.entity.add_entity(self.create_process())
         self.entity.add_component(PropagateCallback([
-            "draw","draw_blocks","draw_lines","redraw",
+            "draw","draw_blocks","draw_lines","draw_debug","redraw",
             "mousebuttondown","mousebuttonup","mousemotion",
             "update_occupancy"]))
         self.entity.fire_callbacks("awake")
@@ -72,16 +72,25 @@ class Gui(GuiApplication):
     def create_process(self,i):
         e = Entity()
         process = e.add_component(Process(i,i))
-        e.add_component(PropagateCallback([
-            "draw","draw_blocks","draw_lines","redraw",
-            "mousebuttondown","mousebuttonup","mousemotion",
-            "update_occupancy"]))
-        e.add_entity(self.create_process_gui((100,100),(100,1+(i+1)*self.grid_resolution),process))
+        # e.add_component(PropagateCallback([
+        #     "draw","draw_blocks","draw_lines","draw_debug","redraw",
+        #     "mousebuttondown","mousebuttonup","mousemotion",
+        #     "update_occupancy"]))
+        size=(self.grid_resolution*6,1+(i+1)*self.grid_resolution)
+        self.attach_process_gui(e,pos=(100,100),size=size)
+
+        for i in xrange(process.num_inputs):
+            e.add_entity(self.create_process_input(process, x=0, y=self.grid_resolution * (i+2)))
+        for i in xrange(process.num_outputs):
+            e.add_entity(self.create_process_output(process, x=size[0], y=self.grid_resolution * (i+2)))
+
+
         e.fire_callbacks("awake")
         return e
 
-    def create_process_gui(self,pos,size,process):
-        e = Entity()
+    def attach_process_gui(self,entity,pos,size):
+        e = entity
+        process = e.get_component(Process)
         e.add_component(Pose(*pos))
         e.add_component(Size(size))
         e.add_component(Anchor(0.5))
@@ -90,13 +99,14 @@ class Gui(GuiApplication):
         # e.add_component(SurfaceDrawEvent("awake",draw_event))
         e.add_component(SurfaceDrawEvent("redraw",draw_event))
         e.add_component(BoundingBox())
-        e.add_component(OccupyingBoundingBox())
-        e.add_component(OccupyingProcess())
+        # e.add_component(OccupyingBoundingBox())
+        # e.add_component(OccupyingProcess())
         e.add_component(Selectable())
         e.add_component(Draggable())
         e.add_component(SnapToGrid(self.grid_resolution))
-        e.add_component(PropagateCallback([draw_event,"draw_lines","mousebuttondown","mousebuttonup","mousemotion"]))
+        e.add_component(PropagateCallback([draw_event,"draw_lines","draw_debug","mousebuttondown","mousebuttonup","mousemotion"]))
         # e.add_component(DrawProcessConnectors("draw_lines",padding=self.grid_resolution))
+
         def dragging(draggable):
             self.entity.fire_callbacks("update_occupancy",self.entity.get_component(OccupancyGrid))
             self.entity.get_component(Pygame).draw()
@@ -104,8 +114,8 @@ class Gui(GuiApplication):
         e.register_callback("dragging", dragging)
 
         e.add_entity(self.create_box(size,draw_event))
-        e.add_entity(self.create_process_input_gui(size,process.num_inputs))
-        e.add_entity(self.create_process_output_gui(size,process.num_outputs))
+        # e.add_entity(self.create_process_input_gui(size,process.num_inputs))
+        # e.add_entity(self.create_process_output_gui(size,process.num_outputs))
         e.add_component(BlitSurface("draw_blocks"))
         e.fire_callbacks("awake")
         return e
@@ -122,17 +132,20 @@ class Gui(GuiApplication):
         e.fire_callbacks("awake")
         return e
 
-    def create_process_input_gui(self, size, num):
+    def create_process_input(self, process, x, y):
         e = Entity()
-        e.add_component(PropagateCallback(["draw_lines","mousebuttondown","mousebuttonup","mousemotion"]))
-        for i in range(num):
-            inp = e.add_entity(self.create_process_input_connector_gui(0,self.grid_resolution * (i+2)))
-            inp = inp.get_component(Pose)
-        e.fire_callbacks("awake")
+        e.add_component(ProcessInput(process))
+        e = self.attach_process_input_gui(e, x, y)
         return e
 
-    def create_process_input_connector_gui(self, x, y):
+    def create_process_output(self, process, x, y):
         e = Entity()
+        e.add_component(ProcessOutput(process))
+        e = self.attach_process_output_gui(e, x, y)
+        return e
+
+    def attach_process_input_gui(self, entity, x, y):
+        e = entity
         hitbox_height = 5
         e.add_component(Pose(x,y))
         e.add_component(PoseTransform())
@@ -151,36 +164,54 @@ class Gui(GuiApplication):
         e.register_callback("dragging",onDragging)
         e.fire_callbacks("awake")
         return e
-    def create_process_output_gui(self, size, num):
-        e = Entity()
-        e.add_component(PropagateCallback(["draw_lines","mousebuttondown","mousebuttonup","mousemotion"]))
-        for i in range(num):
-            inp = e.add_entity(self.create_process_output_connector_gui(size[0],self.grid_resolution * (i+2)))
-            inp = inp.get_component(Pose)
-        e.fire_callbacks("awake")
-        return e
 
-    def create_process_output_connector_gui(self, x, y):
-        e = Entity()
+    def attach_process_output_gui(self, entity, x, y):
+        e = entity
         hitbox_height = 5
         e.add_component(Pose(x,y))
         e.add_component(PoseTransform())
         e.add_component(Size((self.grid_resolution,hitbox_height)))
         e.add_component(Anchor((0,0.5)))
-        # e.add_component(Size((size[0]-1,size[1]-1)))
+        ## e.add_component(Size((size[0]-1,size[1]-1)))
         e.add_component(BoundingBox())
-        # e.add_component(DrawBoundingBox("draw_lines",(0,0,0)))
+        ## e.add_component(DrawBoundingBox("draw_lines",(0,0,0)))
         e.add_component(Selectable())
         e.add_component(Draggable())
         e.add_component(SnapToGrid(self.grid_resolution))
         e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
+        # def onDragging(draggable):
+            # self.entity.get_component(Pygame).draw()
+        # e.add_component(PropagateCallback(["draw_lines","draw_debug","mousebuttondown","mousebuttonup","mousemotion"]))
+
         def onDragging(draggable):
-            e.find_root().get_component(Pygame).draw()
+            self.entity.get_component(Pygame).draw()
+
+
+        # e.add_entity(self.create_draggable_handle(onDragging=onDragging,x=self.grid_resolution,y=0))
         e.register_callback("dragging",onDragging)
         e.fire_callbacks("awake")
         return e
 
-            
+    def create_draggable_handle(self, onDragging, x, y):
+        e = Entity()
+        hitbox_size = 5
+        e.add_component(Pose(x,y))
+        e.add_component(PoseTransform())
+        e.add_component(Size((hitbox_size,hitbox_size)))
+        e.add_component(Anchor((0.5,0.5)))
+        e.add_component(SnapToGrid(self.grid_resolution))
+        e.add_component(BoundingBox())
+        e.add_component(Selectable())
+        e.add_component(Draggable())
+        e.add_component(DrawBoundingBox("draw_debug",(255,0,0)))
+        # e.add_component(FindLineFrom((0,0)))
+
+        # e.register_callback("dragging",onDragging)
+
+        e.register_callback("dragging",onDragging)
+        e.fire_callbacks("awake")
+        return e
+
     
 def main(module_name):
     if module_name == "__main__":
