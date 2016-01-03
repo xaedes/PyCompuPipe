@@ -51,7 +51,7 @@ class Gui(GuiApplication):
             "update_occupancy"]))
         self.entity.fire_callbacks("awake")
         self.entity.fire_callbacks("redraw")
-        self.entity.fire_callbacks("update_occupancy",self.entity.get_component(OccupancyGrid))
+        # self.entity.fire_callbacks("update_occupancy",self.entity.get_component(OccupancyGrid))
         self.entity.get_component(Pygame).draw()
 
         self.entity.print_structure()
@@ -112,7 +112,7 @@ class Gui(GuiApplication):
 
         def onDragging(draggable):
 
-            self.entity.fire_callbacks("update_occupancy",self.entity.get_component(OccupancyGrid))
+            # self.entity.fire_callbacks("update_occupancy",self.entity.get_component(OccupancyGrid))
             self.entity.get_component(Pygame).draw()
 
         e.register_callback("dragging", onDragging)
