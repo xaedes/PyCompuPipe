@@ -12,6 +12,15 @@ from pycompupipe.components import GuiElement
 import pytest
 
 class TestGuiElement():
+    def test_usage(self):
+        e = Entity()
+        g = e.add_component(GuiElement())
+        e.fire_callbacks("awake")
+        assert g.position == (0,0)
+        assert g.size == (0,0)
+        assert g.anchor == (0,0)
+        assert g.rect() == (0,0,0,0)
+
     def test_anchor1(self):
         e = Entity()
         g = e.add_component(GuiElement((0,0),(100,50),(0,0)))

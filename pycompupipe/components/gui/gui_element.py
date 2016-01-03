@@ -8,7 +8,7 @@ from pyecs import *
 
 class GuiElement(Component):
     """docstring for GuiElement"""
-    def __init__(self, position, size, anchor, relative_position = False, snap_to_grid = None, *args,**kwargs):
+    def __init__(self, position=(0,0), size=(0,0), anchor=(0,0), relative_position = False, snap_to_grid = None, *args,**kwargs):
         super(GuiElement, self).__init__(*args,**kwargs)
         self.position = position
         self.relative_position = relative_position
