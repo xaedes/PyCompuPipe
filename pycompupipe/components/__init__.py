@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 from gui import *
+from processing import *
 
 from pose import Pose
 from size import Size
@@ -19,7 +20,6 @@ from pygame_surface import PygameSurface
 from surface_draw_event import SurfaceDrawEvent
 from blit_surface import BlitSurface
 from resize_event_on_videoresize import ResizeEventOnVideoresize
-from process import Process
 from print_entity_structure import PrintEntityStructure
 from draw_process_connectors import DrawProcessConnectors
 from draw_grid import DrawGrid
@@ -31,9 +31,7 @@ from occupying_bounding_box import OccupyingBoundingBox
 from occupying_process import OccupyingProcess
 # from find_line_from import FindLineFrom
 
-from process_input import ProcessInput
-from process_output import ProcessOutput
-from process_connection import ProcessConnection
+
 from fetch_mouse_callbacks_while_selected import FetchMouseCallbacksWhileSelected
 
 
