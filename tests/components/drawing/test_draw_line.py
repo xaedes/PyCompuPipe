@@ -34,7 +34,29 @@ class TestDrawLine():
         size = reference.get_size()
 
         e = Entity()
-        e.add_component(GuiElement())
+        d = e.add_component(DrawLine("draw",[p0,p1],arrow))
+        screen = pygame.Surface(size)
+        screen.fill((255,255,255))
+        d.draw(screen)
+
+        np.testing.assert_almost_equal(
+            pygame.surfarray.pixels3d(screen), 
+            pygame.surfarray.pixels3d(reference)
+            )
+
+    @forFiles("fn","characterization/draw_line_*.png",os.path.dirname(__file__))
+    def test_draw_with_gui_element(self, fn):
+        reference = pygame.image.load(fn)
+        m = re.match(r"draw_line_(\d+),(\d+)_(\d+)_(\w+)\.png", os.path.basename(fn))
+        p = (int(m.group(1)),int(m.group(2)))
+        p0 = (0,0)
+        length = int(m.group(3))
+        p1 = p0[0] + length, p0[1]
+        arrow = True if m.group(4) == "True" else False
+        size = reference.get_size()
+
+        e = Entity()
+        e.add_component(GuiElement(p))
         d = e.add_component(DrawLine("draw",[p0,p1],arrow))
         screen = pygame.Surface(size)
         screen.fill((255,255,255))

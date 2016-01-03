@@ -21,7 +21,7 @@ class DrawLine(Component):
         self.entity.register_callback(self.draw_event_name, self.draw)
 
     def draw(self, screen):
-        x,y = self.entity.fire_callbacks_pipeline("position")
+        x, y = self.entity.fire_callbacks_pipeline("position") or (0,0)
 
         p0, p1 = self.line
 
