@@ -3,6 +3,7 @@
 from __future__ import division    # Standardmäßig float division - Ganzzahldivision kann man explizit mit '//' durchführen
 from numbers import Number
 import math
+import pygame
 
 from pyecs import *
 
@@ -19,9 +20,5 @@ class DrawGrid(Component):
         self.entity.register_callback(self.draw_event_name, self.draw)
 
     def draw(self, screen):
-        w = int(math.floor(screen.get_width() / self.resolution))
-        h = int(math.floor(screen.get_height() / self.resolution))
-        for x in xrange(w):
-            for y in xrange(h):
-                screen.set_at((x*self.resolution,y*self.resolution),self.color)
-                
+        pxls = pygame.surfarray.pixels3d(screen)
+        pxls[::self.resolution,::self.resolution,:] = self.color
