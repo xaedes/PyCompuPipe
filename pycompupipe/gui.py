@@ -46,7 +46,8 @@ class Gui(GuiApplication):
             self.entity.add_entity(self.create_process(i))
         # self.entity.add_entity(self.create_process())
         self.entity.add_component(PropagateCallback([
-            "draw","draw_blocks","draw_lines","draw_debug","redraw",
+            "draw","draw_blocks","draw_lines","draw_debug","redraw", 
+            "videoresize",
             # "mousebuttondown","mousebuttonup","mousemotion",
             "update_occupancy"]))
         self.entity.fire_callbacks("awake")
