@@ -14,10 +14,10 @@ import pytest
 
 class TestSnapToGrid():
 
-    @forEach("x",lambda:iter(range(10)))
-    @forEach("y",lambda:iter(range(10)))
-    @forEach("dx",partial(generateUniformRandoms,0,9.9),10)
-    @forEach("dy",partial(generateUniformRandoms,0,9.9),10)
+    @forEach("x",lambda:iter(range(5)))
+    @forEach("y",lambda:iter(range(5)))
+    @forEach("dx",partial(generateUniformRandoms,0,9.9),5)
+    @forEach("dy",partial(generateUniformRandoms,0,9.9),5)
     def test_pipeline(self,x,y,dx,dy):
         e = Entity()
         assert e.fire_callbacks_pipeline("position") == None
