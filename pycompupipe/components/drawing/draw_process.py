@@ -20,9 +20,3 @@ class DrawProcess(Component):
     def draw(self, screen):
         screen.fill(self.bg_color)
         pygame.draw.rect(screen, self.fg_color, screen.get_rect(), 1)
-
-    def __str__(self):
-        return "%s(%s)" % (
-                super(type(self),self).__str__(), 
-                self.draw_event_name,
-                )
