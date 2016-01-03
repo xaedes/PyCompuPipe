@@ -8,13 +8,11 @@ from pyecs import *
 from pyecs.components import *
 from components import *
 
-from gui_application import GuiApplication
-
 from common import Utils
 
 import pygame
 
-class Gui(GuiApplication):
+class Gui(Application):
     """docstring for Experiment"""
     def __init__(self):
         self.width = 640
@@ -30,6 +28,7 @@ class Gui(GuiApplication):
             size=(self.width,self.height),
             caption="PyCompuPipe",
             flags=pygame.DOUBLEBUF | pygame.RESIZABLE))
+        self.entity.add_component(BlockingPygameEventPump())
         self.entity.add_component(DrawOnResized())
         self.entity.add_component(GuiManager())
         # self.entity.add_component(OccupancyGrid(self.grid_resolution))
@@ -57,6 +56,9 @@ class Gui(GuiApplication):
 
         self.entity.print_structure()
         # self.entity.add_entity(PrintEntityStructure())
+
+    def spin(self):
+        self.entity.get_component(BlockingPygameEventPump).pump()
 
     def create_screen_filling_surface(self, size, name):
         e = Entity()
