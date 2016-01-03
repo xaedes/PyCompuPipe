@@ -63,9 +63,9 @@ class Gui(GuiApplication):
         e.add_component(ResizeEventOnVideoresize("draw"))
         e.add_component(SurfaceDrawEvent("draw","draw_"+name,fire_at_root=True))
         e.add_component(ColorFill("draw_"+name,color=(0,0,0,0)))
-        e.add_component(Pose(0,0))
-        e.add_component(Size(size))
-        e.add_component(Anchor(0))
+        # e.add_component(Pose(0,0))
+        # e.add_component(Size(size))
+        # e.add_component(Anchor(0))
         e.add_component(BlitSurface("draw"))
         e.fire_callbacks("awake")
         return e
@@ -106,6 +106,8 @@ class Gui(GuiApplication):
         e.add_component(FetchMouseCallbacksWhileSelected())
         e.add_component(Selectable())
         e.add_component(Draggable())
+        # e.add_component(ColorFill(draw_event,color=(255,255,255)))
+        e.add_component(DrawProcess(draw_event))
         # e.add_component(SnapToGrid(self.grid_resolution))
         e.add_component(PropagateCallback([draw_event,"draw_lines","draw_debug","mousebuttondown","mousebuttonup","mousemotion"]))
         # e.add_component(DrawProcessConnectors("draw_lines",padding=self.grid_resolution))
@@ -117,24 +119,24 @@ class Gui(GuiApplication):
 
         e.register_callback("dragging", onDragging)
 
-        e.add_entity(self.create_box(size,draw_event))
+        # e.add_entity(self.create_box(size,draw_event))
         # e.add_entity(self.create_process_input_gui(size,process.num_inputs))
         # e.add_entity(self.create_process_output_gui(size,process.num_outputs))
         e.add_component(BlitSurface("draw_blocks"))
         e.fire_callbacks("awake")
         return e
 
-    def create_box(self,size,draw_event):
-        e = Entity()
-        e.add_component(Pose(0,0))
-        e.add_component(Size(size))
-        e.add_component(Anchor(0))
-        # e.add_component(Size((size[0]-1,size[1]-1)))
-        e.add_component(BoundingBox())
-        e.add_component(ColorFill(draw_event,color=(255,255,255)))
-        e.add_component(DrawBoundingBox(draw_event,(0,0,0)))
-        e.fire_callbacks("awake")
-        return e
+    # def create_box(self,size,draw_event):
+    #     e = Entity()
+    #     e.add_component(Pose(0,0))
+    #     e.add_component(Size(size))
+    #     e.add_component(Anchor(0))
+    #     # e.add_component(Size((size[0]-1,size[1]-1)))
+    #     e.add_component(BoundingBox())
+    #     e.add_component(ColorFill(draw_event,color=(255,255,255)))
+    #     e.add_component(DrawBoundingBox(draw_event,(0,0,0)))
+    #     e.fire_callbacks("awake")
+    #     return e
 
     def create_process_input(self, process, x, y):
         e = Entity()
