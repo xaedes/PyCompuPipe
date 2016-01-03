@@ -130,3 +130,11 @@ class TestGuiElement():
     def test_snap_to_grid6(self):
         g = GuiElement((16,16),(32,32),(0,0),snap_to_grid=16)
         assert g.rect() == (16,16,32,32)
+
+    @forEach("x",partial(generateRandomNormals,0,1),10)
+    @forEach("y",partial(generateRandomNormals,0,1),10)
+    def test_position_pipeline(self,x,y):
+        e = Entity()
+        g = GuiElement((x,y),(0,0),(0,0))
+        e.add_component(g)
+        assert e.fire_callbacks_pipeline("position") == (x,y)
