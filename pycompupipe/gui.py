@@ -110,7 +110,10 @@ class Gui(GuiApplication):
         # e.add_component(ColorFill(draw_event,color=(255,255,255)))
         e.add_component(DrawProcess(draw_event))
         # e.add_component(SnapToGrid(self.grid_resolution))
-        e.add_component(PropagateCallback([draw_event,"draw_lines","draw_debug","mousebuttondown","mousebuttonup","mousemotion"]))
+        e.add_component(PropagateCallback([
+            draw_event,"draw_lines","draw_debug"
+            # "mousebuttondown","mousebuttonup","mousemotion"
+            ]))
         # e.add_component(DrawProcessConnectors("draw_lines",padding=self.grid_resolution))
 
         def onDragging(draggable):
