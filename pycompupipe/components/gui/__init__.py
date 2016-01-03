@@ -3,3 +3,5 @@
 
 from gui_element import GuiElement
 from gui_manager import GuiManager
+
+from interaction import *

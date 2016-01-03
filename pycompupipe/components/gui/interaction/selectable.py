@@ -4,7 +4,6 @@ from __future__ import division    # Standardmäßig float division - Ganzzahldi
 
 from pyecs import *
 # from pyecs.components import *
-from . import Pose, Size, Pygame
 
 from time import time
 

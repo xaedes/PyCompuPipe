@@ -4,7 +4,7 @@ from __future__ import division    # Standardmäßig float division - Ganzzahldi
 
 from pyecs import *
 # from pyecs.components import *
-from . import GuiElement
+from .. import GuiElement
 
 from funcy import partial
 

@@ -16,9 +16,6 @@ from snap_to_grid import SnapToGrid
 from bounding_box import BoundingBox
 
 
-from selectable import Selectable
-from draggable import Draggable
-
 
 from draw_bounding_box import DrawBoundingBox
 from draw_process_connectors import DrawProcessConnectors
@@ -33,6 +30,5 @@ from draw_line import DrawLine
 # # from find_line_from import FindLineFrom
 
 
-from fetch_mouse_callbacks_while_selected import FetchMouseCallbacksWhileSelected
 
 
