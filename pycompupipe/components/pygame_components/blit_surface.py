@@ -27,7 +27,11 @@ class BlitSurface(Component):
         self.entity.register_callback(self.draw_event_name, self.draw)
 
     def draw(self, surface):
-        x,y = self.entity.fire_callbacks_pipeline("position")
+        xy = self.entity.fire_callbacks_pipeline("position")
+        if xy is None:
+            x,y = 0,0
+        else:
+            x,y = xy
         # print "blit", self.surface.surface, "at", (x,y), "to", self.draw_event_name
         surface.blit(self.surface.surface,(x,y),None,self.blit_flags)
 
