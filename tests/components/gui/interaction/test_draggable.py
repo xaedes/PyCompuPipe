@@ -65,14 +65,16 @@ class TestDraggable():
         # generate random walk
         n = 100
         dxy = np.random.normal(0,5,(n,2))
+        dxy[0] = 0
         xy = np.cumsum(dxy,axis=0) + cursor_start
         xy = np.round(xy)
 
         # start dragging
+        print xy[0]
         e0.fire_callbacks("mousebuttondown",ButtonEvent(xy[0],1))
         assert draggable.dragging == True
-        assert gui.position[0] == xy[i,0] - cursor_start[0]
-        assert gui.position[1] == xy[i,1] - cursor_start[1]
+        assert gui.position[0] == xy[0,0] - cursor_start[0]
+        assert gui.position[1] == xy[0,1] - cursor_start[1]
 
         # move around n times with random walk
         # omit first and last pos, as these are for buttondown and buttonup
