@@ -108,6 +108,7 @@ class Gui(Application):
         e.add_component(GuiElement(pos,size,(0.5,0.5),snap_to_grid=self.grid_resolution))
         e.add_component(FetchMouseCallbacksWhileSelected())
         e.add_component(Selectable())
+        e.add_component(SelectedWhileMouseDown())
         e.add_component(Draggable())
         # e.add_component(ColorFill(draw_event,color=(255,255,255)))
         e.add_component(DrawProcess(draw_event))
