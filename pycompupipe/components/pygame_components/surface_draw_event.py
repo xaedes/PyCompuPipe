@@ -24,17 +24,19 @@ class SurfaceDrawEvent(Component):
         self.surface = pygamesurface
         self.entity.register_callback(self.on_event, self.event)
         
-    @callback
-    def entity_added(self, parent, entity):
-        if entity == self.entity:
-            if self.fire_at_root:
-                self.fire_at = parent.find_root()
-            else:
-                self.fire_at = self.entity
+    def _fire_at(self):
+        if self.fire_at_root and self.entity:
+            return self.entity.find_root()
+
+        if not self.fire_at_root:
+            return self.entity
 
     def event(self, *args, **kwargs):
         # print self.event_name
-        if self.fire_at is not None:
+
+        self.fire_at = self.fire_at or self._fire_at()
+
+        if self.fire_at and self.surface:
             self.fire_at.fire_callbacks(self.event_name, self.surface.surface)
 
     def __str__(self):
