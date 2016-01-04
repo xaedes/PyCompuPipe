@@ -4,19 +4,34 @@ from __future__ import division    # Standardmäßig float division - Ganzzahldi
 
 from pyecs import *
 # from pyecs.components import *
-from . import Pygame
 
 import pygame
 
 class BlockingPygameEventPump(Component):
     """docstring for BlockingPygameEventPump"""
+
+    
+    event_mappings = dict({
+        pygame.QUIT: "quit",
+        pygame.ACTIVEEVENT: "activeevent",
+        pygame.KEYDOWN: "keydown",
+        pygame.KEYUP: "keyup",
+        pygame.MOUSEMOTION: "mousemotion",
+        pygame.MOUSEBUTTONUP: "mousebuttonup",
+        pygame.MOUSEBUTTONDOWN: "mousebuttondown",
+        pygame.JOYAXISMOTION: "joyaxismotion",
+        pygame.JOYBALLMOTION: "joyballmotion",
+        pygame.JOYHATMOTION: "joyhatmotion",
+        pygame.JOYBUTTONUP: "joybuttonup",
+        pygame.JOYBUTTONDOWN: "joybuttondown",
+        pygame.VIDEORESIZE: "videoresize",
+        pygame.VIDEOEXPOSE: "videoexpose",
+        pygame.USEREVENT: "userevent"
+        })
+
     def __init__(self, *args,**kwargs):
         super(BlockingPygameEventPump, self).__init__(*args,**kwargs)
         self.done = False
-
-    @callback
-    def awake(self):
-        self.pygame = self.get_component(Pygame)
 
     @callback
     def quit(self, event):
@@ -25,6 +40,6 @@ class BlockingPygameEventPump(Component):
     def pump(self):
         while not self.done:
             event = pygame.event.wait()
-            if event.type in self.pygame.pygame_mappings:
-                self.entity.fire_callbacks(self.pygame.pygame_mappings[event.type], event)
+            if event.type in self.event_mappings:
+                self.entity.fire_callbacks(self.event_mappings[event.type], event)
 
