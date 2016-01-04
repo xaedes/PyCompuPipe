@@ -22,9 +22,9 @@ class Draggable(Component):
         self.last_pos = None
         self.guielement = None
 
-    @callback
+    @component_callback
     @with_components(required=[GuiElement])
-    def awake(self, guielement):
+    def component_attached(self, guielement):
         self.guielement = guielement
 
     @callback    
