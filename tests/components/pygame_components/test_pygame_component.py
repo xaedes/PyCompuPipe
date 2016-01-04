@@ -41,10 +41,13 @@ class TestPygame():
         assert mocked_pygame_display_set_mode.not_called
 
         mocked_pygame_display_set_mode.reset_mock()
+        mocked_resized = mock.MagicMock()
+        e.register_callback("resized", mocked_resized)
 
         # this event is generated after user is not holding the mouse down anymore to resize
         e.fire_callbacks("activeevent",ActiveEvent(1,2)) 
         assert c.size == (5,5)
+        mocked_resized.assert_called_once_with(c)
         mocked_pygame_display_set_mode.assert_called_once_with(c.size, c.flags)
         assert c.screen == mocked_pygame_display_set_mode.return_value
 
