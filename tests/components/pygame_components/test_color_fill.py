@@ -7,8 +7,6 @@ from pycompupipe.components import ColorFill
 
 import mock
 import pygame
-import re
-import os.path
 
 from testing import *
 
