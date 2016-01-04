@@ -4,17 +4,12 @@ from __future__ import division    # Standardmäßig float division - Ganzzahldi
 
 from pyecs import *
 # from pyecs.components import *
-from . import Pygame
 
 class DrawOnResized(Component):
-    """fires draw callback on videoresize callback"""
+    """fires draw callback on 'resized' callback"""
     def __init__(self,*args,**kwargs):
         super(DrawOnResized, self).__init__(*args,**kwargs)
 
     @callback
-    def awake(self):
-        self.pygame = self.get_component(Pygame)
-    
-    @callback
     def resized(self, pygame):
-        self.pygame.draw()
+        pygame.draw()
