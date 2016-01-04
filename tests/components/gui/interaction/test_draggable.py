@@ -55,7 +55,7 @@ class TestDraggable():
 
         e0.fire_callbacks("awake")
 
-        draggable = e1.add_component(Draggable())
+        draggable = e1.add_component(Draggable(0))
 
         Event = namedtuple("Event",["pos"])
         ButtonEvent = namedtuple("Event",["pos","button"])
@@ -63,32 +63,33 @@ class TestDraggable():
         cursor_start = (5,5) # inside of gui element
 
         # generate random walk
-        n = 100
+        n = 30
         dxy = np.random.normal(0,5,(n,2))
         dxy[0] = 0
         xy = np.cumsum(dxy,axis=0) + cursor_start
         xy = np.round(xy)
 
         # start dragging
-        print xy[0]
         e0.fire_callbacks("mousebuttondown",ButtonEvent(xy[0],1))
         assert draggable.dragging == True
-        assert gui.position[0] == xy[0,0] - cursor_start[0]
-        assert gui.position[1] == xy[0,1] - cursor_start[1]
+        assert gui.position[0] == 0
+        assert gui.position[1] == 0
+        np.testing.assert_almost_equal(draggable.last_pos, xy[0])
 
         # move around n times with random walk
-        # omit first and last pos, as these are for buttondown and buttonup
-        for i in xrange(1,n-1):
+        # omit first pos, as these is for initial buttondown
+        for i in range(1,n-1):
             e0.fire_callbacks("mousemotion",Event(xy[i]))
-
             # assert gui element was moved
             assert gui.position[0] == xy[i,0] - cursor_start[0]
             assert gui.position[1] == xy[i,1] - cursor_start[1]
 
-        # end moving
-        e.fire_callbacks("mousebuttonup",Event(xy[-1]))
-        assert gui.position[0] == xy[-1,0] - cursor_start[0]
-        assert gui.position[1] == xy[-1,1] - cursor_start[1]
+        # end moving by releasing the mouse button
+        e0.fire_callbacks("mousebuttonup",Event(xy[-1]))
+        # NOTE: the position from mousebuttonup won't be used
+        # for moving, because gui element is deselected 
+        assert gui.position[0] == xy[-2,0] - cursor_start[0]
+        assert gui.position[1] == xy[-2,1] - cursor_start[1]
         assert draggable.dragging == False
 
 t = TestDraggable()

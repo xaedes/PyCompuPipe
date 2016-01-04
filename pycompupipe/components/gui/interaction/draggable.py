@@ -18,7 +18,6 @@ class Draggable(Component):
         # specify how much time shall elapse between two Pose updates
         self.move_every = move_every
 
-        # print "Draggable()"
         self.last_pos = None
         self.guielement = None
 
@@ -35,25 +34,34 @@ class Draggable(Component):
 
     @callback    
     def mousebuttondown(self, event):
-        if self.dragging:
-            self.last_pos = event.pos
+        self.new_pos(event.pos)
                     
     @callback    
     def mousemotion(self, event):
-        if self.dragging:
-            # print "mousemotion", event
-            if time() - self.last_move > self.move_every:
-                self.last_move = time()
-                self.guielement.position = self.guielement.position[0] + event.pos[0] - self.last_pos[0], self.guielement.position[1] + event.pos[1] - self.last_pos[1]
-                self.last_pos = event.pos
-                self.entity.fire_callbacks("dragging", self)
+        self.new_pos(event.pos)
     
+    @callback    
+    def mousebuttonup(self, event):
+        self.new_pos(event.pos)
+    
+    def new_pos(self, pos):
+        if not self.dragging:
+            return 
+
+        if self.last_pos is None:
+            self.last_pos = pos
+
+        elif time() - self.last_move > self.move_every:
+            self.last_move = time()
+            self.guielement.position = self.guielement.position[0] + pos[0] - self.last_pos[0], self.guielement.position[1] + pos[1] - self.last_pos[1]
+            self.last_pos = pos
+            self.entity.fire_callbacks("dragging", self)
+
     @callback
     def deselected(self, selectable):
         # deselect
         if self.dragging:
-            # print "mousebuttonup", event
             self.dragging = False
+            self.last_pos = None
             self.entity.fire_callbacks("drop", self)
-
 
