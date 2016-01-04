@@ -43,4 +43,10 @@ class GuiManager(Component):
     def mouse_callback(self, event_type, event):
         gui_elements = self.query(*event.pos)
         for gui_element in gui_elements:
-            gui_element.entity.fire_callbacks(event_type, event)
+            if not gui_element.always_fetch_mouse:
+                gui_element.entity.fire_callbacks(event_type, event)
+
+            # gui_element.always_fetch_mouse == True:
+            # the gui element has mouse callbacks on manager entity
+            # we don't want to fire events twice for this gui element
+            # so we do nothing here

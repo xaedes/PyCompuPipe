@@ -13,6 +13,13 @@ import pytest
 
 import mock
 
+class Event():
+    def __init__(self,**kwargs):
+        for key,value in kwargs.iteritems():
+            setattr(self,key,value)
+
+
+
 class TestGuiManager():
 
     def test_register_manager(self):
@@ -70,31 +77,57 @@ class TestGuiManager():
 
         # note: e2 and e3 overlap from (0,25) to (100,50)
 
-        class Event():
-            def __init__(self,**kwargs):
-                for key,value in kwargs.iteritems():
-                    setattr(self,key,value)
-        
         event_inside_e2 = Event(pos=(50,10))  
         event_inside_e2e3 = Event(pos=(50,30))
         event_inside_e3 = Event(pos=(50,60))
 
 
         e.fire_callbacks(callback_name, event_inside_e2)
-        callback2.assert_called_with(event_inside_e2)
+        callback2.assert_called_once_with(event_inside_e2)
         callback3.assert_not_called()
 
         callback2.reset_mock()
         callback3.reset_mock()
         e.fire_callbacks(callback_name, event_inside_e2e3)
-        callback2.assert_called_with(event_inside_e2e3)
-        callback3.assert_called_with(event_inside_e2e3)
+        callback2.assert_called_once_with(event_inside_e2e3)
+        callback3.assert_called_once_with(event_inside_e2e3)
 
         callback2.reset_mock()
         callback3.reset_mock()
         e.fire_callbacks(callback_name, event_inside_e3)
         callback2.assert_not_called()
-        callback3.assert_called_with(event_inside_e3)
+        callback3.assert_called_once_with(event_inside_e3)
 
+    def test_fetch_mouse(self):
+        e0 = Entity()
+        e1 = e0.add_entity(Entity())
+        manager = e0.add_component(GuiManager())
+        element = e1.add_component(GuiElement((0,0),(10,10)))
+        e0.fire_callbacks("awake")
+        assert element.always_fetch_mouse == False
 
+        mocked_mousemotion = mock.MagicMock()
+        e1.register_callback("mousemotion", mocked_mousemotion)
 
+        event_inside = Event(pos=(5,5))
+        event_outside = Event(pos=(15,5))
+
+        mocked_mousemotion.reset_mock()
+        element.always_fetch_mouse = False
+        e0.fire_callbacks("mousemotion",event_inside)
+        mocked_mousemotion.assert_called_once_with(event_inside)
+        
+        mocked_mousemotion.reset_mock()
+        element.always_fetch_mouse = False
+        e0.fire_callbacks("mousemotion",event_outside)
+        mocked_mousemotion.assert_not_called()
+
+        mocked_mousemotion.reset_mock()
+        element.always_fetch_mouse = True
+        e0.fire_callbacks("mousemotion",event_inside)
+        mocked_mousemotion.assert_called_once_with(event_inside)
+        
+        mocked_mousemotion.reset_mock()
+        element.always_fetch_mouse = True
+        e0.fire_callbacks("mousemotion",event_outside)
+        mocked_mousemotion.assert_called_once_with(event_outside)

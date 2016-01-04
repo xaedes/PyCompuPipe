@@ -6,6 +6,8 @@ import math
 from pyecs import *
 # from . import Size
 
+from funcy import partial
+
 class GuiElement(Component):
     """docstring for GuiElement"""
     def __init__(self, position=(0,0), size=(0,0), anchor=(0,0), relative_position = False, snap_to_grid = None, *args,**kwargs):
@@ -17,6 +19,28 @@ class GuiElement(Component):
         self.snap_to_grid = snap_to_grid
         self.manager = None
         self.parent_gui_element = None
+        self._always_fetch_mouse = False
+        self.mouse_callbacks = []
+        self.mouse_callbacks.append(("mousemotion",partial(self.mouse_callback, "mousemotion")))
+        self.mouse_callbacks.append(("mousebuttonup",partial(self.mouse_callback, "mousebuttonup")))
+        self.mouse_callbacks.append(("mousebuttondown",partial(self.mouse_callback, "mousebuttondown")))
+
+    @property
+    def always_fetch_mouse(self):
+        return self._always_fetch_mouse
+
+    @always_fetch_mouse.setter
+    def always_fetch_mouse(self, value):
+        self._always_fetch_mouse = value
+        if self._always_fetch_mouse:
+            for key,callback in self.mouse_callbacks:        
+                self.manager.entity.register_callback(key,callback)
+        else:
+            for key,callback in self.mouse_callbacks:        
+                self.manager.entity.remove_callback(key,callback)
+
+    def mouse_callback(self, key, event):
+        self.entity.fire_callbacks(key, event)
 
     @callback
     def entity_added(self, parent, entity):
