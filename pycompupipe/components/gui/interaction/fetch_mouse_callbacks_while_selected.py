@@ -18,9 +18,9 @@ class FetchMouseCallbacksWhileSelected(Component):
         self.mouse_callbacks.append(("mousebuttondown",partial(self.mouse_callback, "mousebuttondown")))
         self.guielement = None
 
-    @callback
+    @component_callback
     @with_components(required=[GuiElement])
-    def awake(self, guielement):
+    def component_attached(self, guielement):
         self.guielement = guielement
 
     @callback    
