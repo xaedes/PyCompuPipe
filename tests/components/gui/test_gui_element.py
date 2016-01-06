@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 
-import math
 from funcy import partial
 from testing import *
 
 from pyecs import *
 from pycompupipe.components import GuiElement
 
-import pytest
 
 class TestGuiElement():
     def test_usage(self):

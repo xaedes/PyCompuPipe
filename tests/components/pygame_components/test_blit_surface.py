@@ -7,8 +7,6 @@ from pycompupipe.components import PygameSurface, BlitSurface, GuiElement
 
 import mock
 import pygame
-import re
-import os.path
 
 from testing import *
 

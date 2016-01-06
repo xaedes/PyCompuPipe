@@ -6,7 +6,6 @@ from pyecs import *
 from pycompupipe.components import Pygame, BlockingPygameEventPump
 
 import mock
-from testing import *
 from funcy import partial
 
 class Event(object):

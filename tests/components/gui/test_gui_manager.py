@@ -2,22 +2,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 
-import math
-from funcy import partial
 from testing import *
 
 from pyecs import *
+from pycompupipe.other import Event
 from pycompupipe.components import GuiManager, GuiElement
 
-import pytest
-
 import mock
-
-class Event():
-    def __init__(self,**kwargs):
-        for key,value in kwargs.iteritems():
-            setattr(self,key,value)
-
 
 
 class TestGuiManager():

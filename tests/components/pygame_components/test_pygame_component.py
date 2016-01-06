@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from pyecs import *
+from pycompupipe.other import Event
 from pycompupipe.components import Pygame
 
 import mock
-from testing import *
-from collections import namedtuple
 
 import pygame
 
@@ -31,10 +30,8 @@ class TestPygame():
         e = Entity()
         c = Pygame(size=(1,1),flags=pygame.RESIZABLE)
         e.add_component(c)
-        SizeEvent = namedtuple("Event",["size"])
-        ActiveEvent = namedtuple("Event",["gain","state"])
         assert c.size != (5,5)
-        e.fire_callbacks("videoresize",SizeEvent((5,5)))
+        e.fire_callbacks("videoresize",Event(size=(5,5)))
 
         # we don't want to react to every videoresize, but wait for the user to finish resizing
         assert c.size == (1,1)
@@ -45,7 +42,7 @@ class TestPygame():
         e.register_callback("resized", mocked_resized)
 
         # this event is generated after user is not holding the mouse down anymore to resize
-        e.fire_callbacks("activeevent",ActiveEvent(1,2)) 
+        e.fire_callbacks("activeevent",Event(gain=1,state=2)) 
         assert c.size == (5,5)
         mocked_resized.assert_called_once_with(c)
         mocked_pygame_display_set_mode.assert_called_once_with(c.size, c.flags)

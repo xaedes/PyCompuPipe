@@ -5,9 +5,6 @@ from pyecs import *
 from pycompupipe.components import PygameSurface, SurfaceDrawEvent
 
 import mock
-import pygame
-
-from testing import *
 
 class TestSurfaceDrawEvent():
 

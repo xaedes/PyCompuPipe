@@ -2,17 +2,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 
-import math
-from funcy import partial
 from testing import *
 
 from pyecs import *
+from pycompupipe.other import Event
 from pycompupipe.components import GuiElement,GuiManager,Selectable, FetchMouseCallbacksWhileSelected
 
-import pytest
 import mock
-
-from collections import namedtuple
 
 class TestFetchMouseCallbacksWhileSelected():
     def test(self):
@@ -24,12 +20,10 @@ class TestFetchMouseCallbacksWhileSelected():
         f = e1.add_component(FetchMouseCallbacksWhileSelected())
         e0.fire_callbacks("awake")
 
-        PosEvent = namedtuple("Event",["pos"])
-
         # note: position outside of guielement
-        argss = [("mousebuttonup",PosEvent((50,50))),
-                 ("mousemotion",PosEvent((50,50))),
-                 ("mousebuttondown",PosEvent((50,50)))]
+        argss = [("mousebuttonup",Event(pos=(50,50))),
+                 ("mousemotion",Event(pos=(50,50))),
+                 ("mousebuttondown",Event(pos=(50,50)))]
         for args in argss:
             mocked = mock.MagicMock()
             e1.register_callback(args[0],mocked)
