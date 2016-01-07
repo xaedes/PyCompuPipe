@@ -88,3 +88,9 @@ class GuiElement(Component):
     @component_callback
     def register_manager(self, manager):
         self.manager = manager
+
+    def __str__(self):
+        return "%s(%s)" % (
+                super(type(self),self).__str__(), 
+                self.position 
+                )
