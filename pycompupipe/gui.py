@@ -28,6 +28,12 @@ class Gui(Application):
             size=(self.width,self.height),
             caption="PyCompuPipe",
             flags=pygame.DOUBLEBUF | pygame.RESIZABLE))
+
+        def draw(*args,**kwargs):
+            self.entity.get_component(Pygame).draw()
+
+        self.entity.draw = draw
+
         self.entity.add_component(BlockingPygameEventPump())
         self.entity.add_component(DrawOnResized())
         self.entity.add_component(GuiManager())
@@ -96,11 +102,7 @@ class Gui(Application):
             draw_event,"draw_lines","draw_debug"
             ]))
 
-        def onDragging(draggable):
-
-            self.entity.get_component(Pygame).draw()
-
-        e.register_callback("dragging", onDragging)
+        e.register_callback("dragging", self.entity.draw)
 
         e.add_component(BlitSurface("draw_blocks"))
         e.fire_callbacks("awake")
@@ -124,15 +126,18 @@ class Gui(Application):
 
         e.add_component(GuiElement((x,y),(self.grid_resolution,hitbox_height),(1,0.5),relative_position=True,snap_to_grid=self.grid_resolution))
         e.add_component(FetchMouseCallbacksWhileSelected())
+        e.add_component(Clickable())
         e.add_component(Selectable())
-        e.add_component(Draggable())
+        # e.add_component(Draggable())
+        e.add_component(UserCanDefinePath())
+        e.add_component(DrawPath("draw_lines",self.grid_resolution))
 
         e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
 
-        def onDragging(draggable):
-            e.find_root().get_component(Pygame).draw()
+        # def onDragging(draggable):
+            # e.find_root().get_component(Pygame).draw()
             
-        e.register_callback("dragging",onDragging)
+        # e.register_callback("dragging",onDragging)
         e.fire_callbacks("awake")
         return e
 
@@ -142,15 +147,15 @@ class Gui(Application):
 
         e.add_component(GuiElement((x,y),(self.grid_resolution,hitbox_height),(0,0.5),relative_position=True,snap_to_grid=self.grid_resolution))
         e.add_component(FetchMouseCallbacksWhileSelected())
-        e.add_component(Selectable())
-        e.add_component(Draggable())
+        # e.add_component(Selectable())
+        # e.add_component(Draggable())
 
         e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
 
-        def onDragging(draggable):
-            self.entity.get_component(Pygame).draw()
+        # def onDragging(draggable):
+            # self.entity.get_component(Pygame).draw()
 
-        e.register_callback("dragging",onDragging)
+        # e.register_callback("dragging",onDragging)
         e.fire_callbacks("awake")
         return e
 
