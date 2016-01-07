@@ -3,28 +3,22 @@
 
 
 from pyecs import *
+from pycompupipe.other import Event
 from pycompupipe.components import Pygame, BlockingPygameEventPump
 
 import mock
 from funcy import partial
 
-class Event(object):
-    """docstring for Event"""
-    def __init__(self, type):
-        super(Event, self).__init__()
-        self.type = type
-        
-
 def generateEvents():
     # first all events that are not "quit"
     for event_type, name in BlockingPygameEventPump.event_mappings.iteritems():
         if name != "quit":
-            yield Event(event_type)
+            yield Event(type=event_type)
 
     # now "quit" events
     for event_type, name in BlockingPygameEventPump.event_mappings.iteritems():
         if name == "quit":
-            yield Event(event_type)
+            yield Event(type=event_type)
 
         
 
