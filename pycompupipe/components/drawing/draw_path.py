@@ -1,13 +1,15 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 from __future__ import division    # Standardmäßig float division - Ganzzahldivision kann man explizit mit '//' durchführen
-import math
+from __future__ import absolute_import
 
 import numpy as np
+import math
+import pygame
+
 from pyecs import *
 from pycompupipe.other import MathUtils
 from pycompupipe.components import GuiElement
-import pygame
 
 class DrawPath(Component):
     """docstring for DrawPath"""
