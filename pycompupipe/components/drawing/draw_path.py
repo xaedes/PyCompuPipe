@@ -8,6 +8,7 @@ import math
 import pygame
 
 from pyecs import *
+from pycompupipe.other import child_support_points
 from pycompupipe.other import MathUtils
 from pycompupipe.components import GuiElement
 
@@ -27,7 +28,7 @@ class DrawPath(Component):
         points = []
 
         # build path from support points
-        for support in self.entity.find_entities(lambda e: e.has_tag("support_point")):
+        for support in child_support_points(self.entity):
             gui = support.get_component(GuiElement)
             x,y = gui.entity.fire_callbacks_pipeline("position",(0.5,0.5))
 
