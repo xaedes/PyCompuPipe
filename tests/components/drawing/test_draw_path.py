@@ -59,7 +59,7 @@ class TestDrawPath():
             )
 
 
-    @forEach("n",lambda:iter(range(4,7)))
+    @forEach("n",lambda:iter(range(0,7)))
     @useParameters("xys",["n"],lambda n:10*np.round(np.random.uniform(1,9,(n,2))))
     @forEach("arrow",lambda:iter([0,5,10]))
     def _characterize(self, xys, arrow):

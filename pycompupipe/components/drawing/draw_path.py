@@ -31,22 +31,23 @@ class DrawPath(Component):
 
             points.append((x,y))
 
-        # draw path
-        pygame.draw.aalines(screen, self.color, False, points)
+        if len(points) >= 2:
+            # draw path
+            pygame.draw.aalines(screen, self.color, False, points)
 
-        if self.arrow > 0:
-            # define arrow points
-            above = -0.4*self.arrow, -0.4*self.arrow
-            below = -0.4*self.arrow, +0.4*self.arrow
-            points_arrow = np.array([above,(0,0),below])
+            if self.arrow > 0:
+                # define arrow points
+                above = -0.4*self.arrow, -0.4*self.arrow
+                below = -0.4*self.arrow, +0.4*self.arrow
+                points_arrow = np.array([above,(0,0),below])
 
-            # calculate angle of arrow
-            dx, dy = np.diff(points[-2:],axis=0)[0]
-            angle = math.atan2(float(dy),float(dx))
+                # calculate angle of arrow
+                dx, dy = np.diff(points[-2:],axis=0)[0]
+                angle = math.atan2(float(dy),float(dx))
 
-            # rotate and position arrow points
-            points_arrow = MathUtils.rotate(points_arrow, angle)
-            points_arrow += points[-1]
+                # rotate and position arrow points
+                points_arrow = MathUtils.rotate(points_arrow, angle)
+                points_arrow += points[-1]
 
-            # draw arrow            
-            pygame.draw.aalines(screen, self.color, False, points_arrow)
+                # draw arrow            
+                pygame.draw.aalines(screen, self.color, False, points_arrow)
