@@ -4,4 +4,3 @@
 from . import other
 from . import components
 from gui import Gui
-from gui_application import GuiApplication
