@@ -69,9 +69,13 @@ class GuiElement(Component):
         return (i, j, w, h)
 
     @callback("position")
-    def position_pipeline(self, accum):
+    def position_pipeline(self, inner_anchor):
+        if inner_anchor is None:
+            inner_anchor = (0,0)
+        
         x,y,w,h = self.rect()
-        return (x,y)
+
+        return (x+inner_anchor[0]*w,y+inner_anchor[1]*h)
 
     @callback
     def is_in(self, pos):

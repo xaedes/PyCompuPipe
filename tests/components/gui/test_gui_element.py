@@ -145,3 +145,63 @@ class TestGuiElement():
         g = GuiElement((x,y),(0,0),(0,0))
         e.add_component(g)
         assert e.fire_callbacks_pipeline("position") == (x,y)
+
+    @forEach("x",partial(generateRandomNormals,0,1),10)
+    @forEach("y",partial(generateRandomNormals,0,1),10)
+    def test_position_pipeline_inner_anchor(self,x,y):
+        e = Entity()
+        g = GuiElement((x,y),(20,10),(0.5,0.5))
+        # anchor (0.5,0.5) means (x,y) is position of center of GuiElement
+
+        e.add_component(g)
+
+        # no inner anchor means we want top-left of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position"),
+            (x-10,y-5))
+
+        # explicitely request top-left of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(0,0)),
+            (x-10,y-5))
+
+        # explicitely request center-left of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(0,0.5)),
+            (x-10,y))
+
+        # explicitely request bottom-left of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(0,1)),
+            (x-10,y+5))
+
+        # explicitely request top-center of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(0.5,0)),
+            (x,y-5))
+
+        # explicitely request center of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(0.5,0.5)),
+            (x,y))
+
+        # explicitely request bottom-center of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(0.5,1)),
+            (x,y+5))
+
+        # explicitely request top-right of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(1,0)),
+            (x+10,y-5))
+
+        # explicitely request center-right of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(1,0.5)),
+            (x+10,y))
+
+        # explicitely request bottom-right of gui-element
+        np.testing.assert_almost_equal(
+            e.fire_callbacks_pipeline("position",(1,1)),
+            (x+10,y+5))
+

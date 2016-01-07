@@ -27,7 +27,7 @@ class DrawPath(Component):
         # build path from support points
         for support in self.entity.find_entities(lambda e: e.has_tag("support_point")):
             gui = support.get_component(GuiElement)
-            x,y = gui.entity.fire_callbacks_pipeline("position")
+            x,y = gui.entity.fire_callbacks_pipeline("position",(0.5,0.5))
 
             points.append((x,y))
 
