@@ -12,7 +12,7 @@ class TestSelectedWhileMouseDown():
     @mock.patch("pycompupipe.components.gui.interaction.selected_while_mouse_down.Selectable.select")
     @mock.patch("pycompupipe.components.gui.interaction.selected_while_mouse_down.Selectable.deselect")
     def test(self, mocked_deselect, mocked_select):
-        Selectable.selected = None
+        Selectable._reset_global()
         e = Entity()
         s = e.add_component(Selectable())
         c = e.add_component(SelectedWhileMouseDown())

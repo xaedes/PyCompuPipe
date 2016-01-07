@@ -38,8 +38,8 @@ class TestDraggable():
 
     def test_moving(self):
         Component._reset_global()
+        Selectable._reset_global()
 
-        Selectable.selected = None
         e0 = Entity()
         e0.add_component(GuiManager())
 
