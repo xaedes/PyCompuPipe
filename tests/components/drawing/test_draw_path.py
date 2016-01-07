@@ -31,9 +31,12 @@ class TestDrawPath():
     @forFiles("fn","characterization/draw_path_*.png",os.path.dirname(__file__))
     def test_draw(self, fn):
         reference = pygame.image.load(fn)
-        m = re.match(r"^draw_path_(.+)_(\w+)\.png$", os.path.basename(fn))
+        m = re.match(r"^draw_path_(.*)_(\w+)\.png$", os.path.basename(fn))
         xys = m.group(1)
-        xys = [[float(v) for v in xy.split(",")] for xy in xys.split("_")]
+        if xys == "":
+            xys = list()
+        else:
+            xys = [[float(v) for v in xy.split(",")] for xy in xys.split("_")]
 
         arrow = int(m.group(2))
 
@@ -80,6 +83,29 @@ class TestDrawPath():
                     "_".join((",".join(map(str,xy))) for xy in xys),
                     str(arrow))
                 )
+
+    def test_no_gui_element(self):
+        e0 = Entity()
+        d = e0.add_component(DrawPath("draw"))
+        e1 = e0.add_entity(Entity())
+        e1.add_tag("support_point")
+        # e1.add_component(GuiElement())
+
+        size = (100,100)
+        screen = pygame.Surface(size)
+        screen.fill((255,255,255))
+        
+        d.draw(screen)
+
+        assert (pygame.surfarray.pixels3d(screen) == 255).all()
+
+        
+    def _support_point(self,x,y):
+        e = Entity()
+        e.add_component(GuiElement((x,y)))
+        e.add_tag("support_point")
+        return e
+
 
 def main(module_name):
     if module_name == "__main__":
