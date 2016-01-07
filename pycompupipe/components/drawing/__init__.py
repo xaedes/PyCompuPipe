@@ -3,4 +3,5 @@
 
 from draw_grid import DrawGrid
 from draw_line import DrawLine
+from draw_path import DrawPath
 from draw_process import DrawProcess
