@@ -19,7 +19,7 @@ class GuiElement(Component):
         self.anchor = anchor
         self.snap_to_grid = snap_to_grid
         self.manager = None
-        self.parent_gui_element = None
+        self.relative_gui_element = None
         self._always_fetch_mouse = False
         self.mouse_callbacks = []
         self.mouse_callbacks.append(("mousemotion",partial(self.mouse_callback, "mousemotion")))
@@ -48,7 +48,7 @@ class GuiElement(Component):
         if entity != self.entity: return
 
         if self.relative_position:
-            self.parent_gui_element = self.parent_gui_element or self.entity.find_parent_entity_with_component(GuiElement).get_component(GuiElement)
+            self.relative_gui_element = self.relative_gui_element or self.entity.find_parent_entity_with_component(GuiElement).get_component(GuiElement)
 
     def rect(self):
         x,y = self.position
@@ -57,9 +57,9 @@ class GuiElement(Component):
         ax,ay = self.anchor
 
         if self.relative_position:
-            px,py,pw,ph = self.parent_gui_element.rect()
+            px,py,pw,ph = self.relative_gui_element.rect()
         else:
-            px, py = 0,0
+            px,py = 0,0
         
         i,j = x-ax*w+px, y-ay*h+py
 
@@ -90,7 +90,9 @@ class GuiElement(Component):
         self.manager = manager
 
     def __str__(self):
-        return "%s(%s)" % (
+        return "%s(%s,%s,%s)" % (
                 super(type(self),self).__str__(), 
-                self.position 
+                self.position,
+                self.size,
+                self.anchor,
                 )
