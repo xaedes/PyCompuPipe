@@ -14,6 +14,7 @@ class GuiManager(Component):
     """docstring for GuiManager"""
     def __init__(self, *args,**kwargs):
         super(GuiManager, self).__init__(*args,**kwargs)
+        self.exclusive_elements = set()
 
     @callback
     def awake(self):
@@ -44,10 +45,11 @@ class GuiManager(Component):
     def mouse_callback(self, event_type, event):
         gui_elements = self.query(*event.pos)
         for gui_element in gui_elements:
-            if not gui_element.always_fetch_mouse:
-                gui_element.entity.fire_callbacks(event_type, event)
+            if len(self.exclusive_elements)==0 or (gui_element in self.exclusive_elements):
+                if not gui_element.always_fetch_mouse:
+                    gui_element.entity.fire_callbacks(event_type, event)
 
-            # gui_element.always_fetch_mouse == True:
-            # the gui element has mouse callbacks on manager entity
-            # we don't want to fire events twice for this gui element
-            # so we do nothing here
+                    # gui_element.always_fetch_mouse == True:
+                    # the gui element has mouse callbacks on manager entity
+                    # we don't want to fire events twice for this gui element
+                    # so we do nothing here
