@@ -3,6 +3,9 @@
 from __future__ import division
 from __future__ import absolute_import
 
+import hunter
+# hunter.trace(module_startswith=["pycompupipe.components.control"])
+# hunter.trace(module_startswith=["pycompupipe","pyecs"])
 import sys
 import pygame
 import numpy as np
@@ -31,6 +34,7 @@ class Gui(Application):
 
         def draw(*args,**kwargs):
             self.entity.get_component(Pygame).draw()
+            # self.entity.print_structure()
 
         self.entity.draw = draw
 
@@ -43,7 +47,7 @@ class Gui(Application):
         self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"lines"))
         self.entity.add_entity(self.create_screen_filling_surface((self.width, self.height),"blocks"))
 
-        for i in range(2,5):
+        for i in range(3,5):
             self.entity.add_entity(self.create_process(i))
 
         self.entity.add_component(PropagateCallback([
@@ -124,12 +128,17 @@ class Gui(Application):
         e = entity
         hitbox_height = self.grid_resolution
 
-        e.add_component(GuiElement((x,y),(self.grid_resolution,hitbox_height),(1,0.5),relative_position=True,snap_to_grid=self.grid_resolution))
+        e.add_component(GuiElement(
+            (x,y),
+            (self.grid_resolution,hitbox_height),
+            (1,0.5),
+            relative_position=True,
+            snap_to_grid=self.grid_resolution))
         e.add_component(FetchMouseCallbacksWhileSelected())
         e.add_component(Clickable())
         e.add_component(Selectable())
         # e.add_component(Draggable())
-        e.add_component(UserCanDefinePath())
+        e.add_component(UserCanDefinePath(ProcessOutput))
         e.add_component(DrawPath("draw_lines",self.grid_resolution))
 
         e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
@@ -145,10 +154,18 @@ class Gui(Application):
         e = entity
         hitbox_height = self.grid_resolution
 
-        e.add_component(GuiElement((x,y),(self.grid_resolution,hitbox_height),(0,0.5),relative_position=True,snap_to_grid=self.grid_resolution))
+        e.add_component(GuiElement(
+            (x+self.grid_resolution,y),
+            (self.grid_resolution,hitbox_height),
+            (1,0.5),
+            relative_position=True,
+            snap_to_grid=self.grid_resolution))
         e.add_component(FetchMouseCallbacksWhileSelected())
-        # e.add_component(Selectable())
+        e.add_component(Clickable())
+        e.add_component(Selectable())
         # e.add_component(Draggable())
+        e.add_component(UserCanDefinePath(ProcessInput))
+        e.add_component(DrawPath("draw_lines",self.grid_resolution))
 
         e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
 

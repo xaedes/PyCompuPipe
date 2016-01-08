@@ -5,10 +5,10 @@ from __future__ import absolute_import
 
 import math
 from pyecs import *
-# from pycompupipe.components import Selectable
+from pycompupipe.components import ProcessOutput
 from pycompupipe.other import child_support_points
-from . import Selectable, FetchMouseCallbacksWhileSelected, Draggable, SelectedWhileMouseDown
-from .. import GuiElement 
+from pycompupipe.components import Selectable, FetchMouseCallbacksWhileSelected, Draggable, SelectedWhileMouseDown
+from pycompupipe.components import GuiElement 
 # from . import UserDefinesPath
 # from pyecs.components import *
 
@@ -17,11 +17,13 @@ from .. import GuiElement
 
 class UserCanDefinePath(Component):
     """docstring for UserCanDefinePath"""
-    def __init__(self, *args,**kwargs):
+    def __init__(self, opposing_connector_type, *args,**kwargs):
         super(UserCanDefinePath, self).__init__(*args,**kwargs)
 
         self.active = False
+        self.opposing_connector_type = opposing_connector_type
         self.last_point = None
+        self.support_points = []
 
     @component_callback
     def component_attached(self):
@@ -33,57 +35,83 @@ class UserCanDefinePath(Component):
     def selected(self, selectable):
         self.active = True
 
+
         self._clear_support_points()
         self.entity.add_entity(self._support_point(0,0,relative=True))
         x,y = self.entity.fire_callbacks_pipeline("position", (0.5,0.5))
 
         self.last_point = self.entity.add_entity(self._support_point(x,y)).get_component(GuiElement)
         
+        self.gui.manager.exclusive_elements.add(self.gui)
+        
         self._redraw()
 
     @callback
     def deselected(self, selectable):
+        
         self.active = False
+        self.last_point = None
         self._make_draggable()
 
-        print "i got deselected", self
-
+        self.gui.manager.exclusive_elements.remove(self.gui)
 
     @callback
     def mouseclick(self, event):
         LEFT, RIGHT = 1, 3 
         if event.button == LEFT:
             if self.active:
-                under_cursor = filter(lambda gui:not(gui.entity), self.gui.manager.query(*event.pos))
-                if len(self.gui.manager.query(*event.pos)) <= 1:
+                under_cursor = filter(lambda gui:gui!=self.gui and gui!=self.last_point, self.gui.manager.query(*event.pos))
+
+                opposing = filter(lambda gui:gui.entity.has_component(self.opposing_connector_type),under_cursor)
+                print opposing
+                if len(opposing) > 0:
+                    # create connection to opposing connector
+                    opposing = opposing[0]
+                    self.last_point.relative_position = True
+                    self.last_point.position = (0,0)
+                    self.last_point.relative_gui_element = opposing
+                    # self.last_point = self.entity.add_entity(self._support_point(0,0,relative=True)).get_component(GuiElement)
+                    # self.last_point.relative_gui_element = opposing
+                    self.selectable.selected = False
+                    
+                elif len(under_cursor) == 0:
+                    # add support point
                     self.last_point = self.entity.add_entity(self._support_point(*event.pos)).get_component(GuiElement)
-                    self._redraw()
+                else:
+                    print under_cursor[0].entity
+                self._redraw()
             else:
+                # start defining path
                 self.selectable.selected = True
 
         elif event.button == RIGHT:
-            self.last_point.entity.remove_from_parent()
-
             supps = child_support_points(self.entity)
-            if len(supps) > 0:
+
+            if len(supps) > 2:
+                # discard last point
+                self.last_point.entity.remove_from_parent()
+
+                supps = child_support_points(self.entity)
                 self.last_point = supps[-1].get_component(GuiElement)
             else:
+                # abort
+                self._clear_support_points()
                 self.last_point = False
                 self.selectable.selected = False
-            print "self.last_point", self.last_point
+            
             self._redraw()
 
-        self.entity.find_root().print_structure()
+        # self.entity.find_root().print_structure()
 
     @callback
     def mousemotion(self, event):
         if self.active and self.last_point:
             x,y = event.pos
-            x = math.floor(x/self.gui.snap_to_grid)*self.gui.snap_to_grid
-            y = math.floor(y/self.gui.snap_to_grid)*self.gui.snap_to_grid
+            x = int(0.5+x/self.gui.snap_to_grid)*self.gui.snap_to_grid
+            y = int(0.5+y/self.gui.snap_to_grid)*self.gui.snap_to_grid
             self.last_point.position = (x,y)
             self._redraw()
-            self.entity.find_root().print_structure()
+            # self.entity.find_root().print_structure()
 
     def _redraw(self):
         self.entity.find_root().draw()
