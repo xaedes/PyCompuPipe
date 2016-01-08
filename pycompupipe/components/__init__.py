@@ -6,5 +6,6 @@ from .gui import *
 from .processing import *
 from .pygame_components import *
 from .drawing import *
+from .control import *
 
 from .print_entity_structure import PrintEntityStructure
