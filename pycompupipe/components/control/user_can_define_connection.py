@@ -15,10 +15,10 @@ from pycompupipe.components import GuiElement
 # print GuiElement.
 # help(GuiElement)
 
-class UserCanDefinePath(Component):
-    """docstring for UserCanDefinePath"""
+class UserCanDefineConnection(Component):
+    """docstring for UserCanDefineConnection"""
     def __init__(self, opposing_connector_type, *args,**kwargs):
-        super(UserCanDefinePath, self).__init__(*args,**kwargs)
+        super(UserCanDefineConnection, self).__init__(*args,**kwargs)
 
         self.active = False
         self.opposing_connector_type = opposing_connector_type
@@ -32,23 +32,29 @@ class UserCanDefinePath(Component):
 
 
     @callback
+    def start(self):
+        self.reset()
+
+    @callback
     def selected(self, selectable):
         self.active = True
 
-
-        self._clear_support_points()
-        self.entity.add_entity(self._support_point(0,0,relative=True))
+        self.reset()
+        # self._clear_support_points()
+        # self.entity.add_entity(self._support_point(0,0,relative=True))
         x,y = self.entity.fire_callbacks_pipeline("position", (0.5,0.5))
 
-        self.last_point = self.entity.add_entity(self._support_point(x,y)).get_component(GuiElement)
+        self.last_point.relative_position = False
+        self.last_point.position = (x,y)
+
+        # self.last_point = self.entity.add_entity(self._support_point(x,y)).get_component(GuiElement)
         
         self.gui.manager.exclusive_elements.add(self.gui)
-        
+
         self._redraw()
 
     @callback
     def deselected(self, selectable):
-        
         self.active = False
         self.last_point = None
         self._make_draggable()
@@ -95,8 +101,7 @@ class UserCanDefinePath(Component):
                 self.last_point = supps[-1].get_component(GuiElement)
             else:
                 # abort
-                self._clear_support_points()
-                self.last_point = False
+                self.reset()
                 self.selectable.selected = False
             
             self._redraw()
@@ -133,7 +138,8 @@ class UserCanDefinePath(Component):
 
     def _make_draggable(self):
         for e in child_support_points(self.entity):
-            e.add_component(Selectable())
-            e.add_component(SelectedWhileMouseDown())
-            e.add_component(FetchMouseCallbacksWhileSelected())
-            e.add_component(Draggable())
+            if not e.get_component(GuiElement).relative_position:
+                e.add_component(Selectable())
+                e.add_component(SelectedWhileMouseDown())
+                e.add_component(FetchMouseCallbacksWhileSelected())
+                e.add_component(Draggable())

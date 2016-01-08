@@ -56,11 +56,20 @@ class Gui(Application):
             "update_occupancy"]))
 
         self.entity.fire_callbacks("awake")
+
+        self.start()
+
         self.entity.fire_callbacks("redraw")
         self.entity.get_component(Pygame).draw()
 
+
         self.entity.print_structure()
         # self.entity.add_entity(PrintEntityStructure())
+
+    def start(self):
+        def call_start(entity):
+            entity.fire_callbacks("start")
+        self.entity.traverse_entities(call_start)
 
     def spin(self):
         self.entity.get_component(BlockingPygameEventPump).pump()
@@ -138,10 +147,10 @@ class Gui(Application):
         e.add_component(Clickable())
         e.add_component(Selectable())
         # e.add_component(Draggable())
-        e.add_component(UserCanDefinePath(ProcessOutput))
+        e.add_component(UserCanDefineIngoingConnection())
         e.add_component(DrawPath("draw_lines",self.grid_resolution))
 
-        e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
+        # e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
 
         # def onDragging(draggable):
             # e.find_root().get_component(Pygame).draw()
@@ -155,19 +164,19 @@ class Gui(Application):
         hitbox_height = self.grid_resolution
 
         e.add_component(GuiElement(
-            (x+self.grid_resolution,y),
+            (x,y),
             (self.grid_resolution,hitbox_height),
-            (1,0.5),
+            (0,0.5),
             relative_position=True,
             snap_to_grid=self.grid_resolution))
         e.add_component(FetchMouseCallbacksWhileSelected())
         e.add_component(Clickable())
         e.add_component(Selectable())
         # e.add_component(Draggable())
-        e.add_component(UserCanDefinePath(ProcessInput))
+        e.add_component(UserCanDefineOutgoingConnection(ProcessInput))
         e.add_component(DrawPath("draw_lines",self.grid_resolution))
 
-        e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
+        # e.add_component(DrawLine("draw_lines",[(0,0),(self.grid_resolution,0)],arrow=True))
 
         # def onDragging(draggable):
             # self.entity.get_component(Pygame).draw()
