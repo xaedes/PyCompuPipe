@@ -73,13 +73,8 @@ class UserCanDefineConnection(Component):
                 if len(opposing) > 0:
                     # create connection to opposing connector
                     opposing = opposing[0]
-                    self.last_point.relative_position = True
-                    self.last_point.position = (0,0)
-                    self.last_point.relative_gui_element = opposing
-                    # self.last_point = self.entity.add_entity(self._support_point(0,0,relative=True)).get_component(GuiElement)
-                    # self.last_point.relative_gui_element = opposing
-                    self.selectable.selected = False
-                    
+                    self._create_connection(opposing)
+
                 elif len(under_cursor) == 0:
                     # add support point
                     self.last_point = self.entity.add_entity(self._support_point(*event.pos)).get_component(GuiElement)
@@ -95,18 +90,34 @@ class UserCanDefineConnection(Component):
 
             if len(supps) > 2:
                 # discard last point
-                self.last_point.entity.remove_from_parent()
-
-                supps = child_support_points(self.entity)
-                self.last_point = supps[-1].get_component(GuiElement)
+                self._discard_last_point()
             else:
                 # abort
-                self.reset()
-                self.selectable.selected = False
-            
+                self._abort()
+
             self._redraw()
+            
 
         # self.entity.find_root().print_structure()
+
+    def _create_connection(self, opposing_connector):
+        # set last point to opposing connector
+        self.last_point.relative_position = True
+        self.last_point.position = (0,0)
+        self.last_point.relative_gui_element = opposing_connector
+
+        self.selectable.selected = False
+
+    def _discard_last_point(self):
+        self.last_point.entity.remove_from_parent()
+
+        supps = child_support_points(self.entity)
+        self.last_point = supps[-1].get_component(GuiElement)
+
+    def _abort(self):
+        self.reset()
+        self.selectable.selected = False
+
 
     @callback
     def mousemotion(self, event):
